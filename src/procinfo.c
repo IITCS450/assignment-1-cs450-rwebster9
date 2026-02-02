@@ -14,9 +14,9 @@ int main(int c, char**v){
 
 
     //in retrospect, I should've trapped these in functions to not make code so long completing same operation
-    char filepath1[filepath];
-    char filepath2[filepath];
-    char filepath3[filepath];
+    char filepath1[filepath]; //<-- stat
+    char filepath2[filepath]; //<-- status
+    char filepath3[filepath]; //<-- cmdline
 
 
     snprintf(filepath1, sizeof(filepath1), "/proc/%s/stat", v[1]);
@@ -35,29 +35,44 @@ int main(int c, char**v){
     int ppid;
     int utime;
     int stime;
+    char cmdlinename[256];
+    char vmline[256];
 
-    if (fscanf(fp, "%d %*s %c %d", &procpid, &procstate, &ppid) == 3) {
-
+    if (fscanf(fp, "%d %*s %c %d %*d %*d %*d %*d %*u %*u %*u %*u %*u %d %d", &procpid, &procstate, &ppid, &utime, &stime) == 5) {
+    
+    float cpu_t = (utime) + (stime);
     printf("PID: %d\n", procpid);
     printf("STATE: %c\n", procstate);
     printf("PPID: %d\n", ppid);
-    }
-
-    fclose(fp);    
-    fp = fopen(filepath2, "r");
-
-    if (fscanf(fp, "%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %d %d", &utime, &stime) == 2) {
-        int cpu_t = (utime/100) + (stime/100);
-        printf("CPU_T: %d\n", cpu_t);
-
-    } else {
-        printf("Error status does not exist or permission not granted.\n");
-    }
+    printf("CPU_T: %0.3f\n", cpu_t);
+    
+}
 
     fclose(fp);    
     fp = fopen(filepath3, "r");
 
+    if (fscanf(fp,"%s", &cmdlinename)) {
+        printf("Cmd_ %s\n", cmdlinename);
+    } else {
+        printf("Error cmd does not exist or permission not granted.\n");
+    }
 
+    fclose(fp);    
+
+    fp = fopen(filepath2, "r");
+
+//    if (fp){
+        while (fgets(vmline, sizeof(vmline), fp)) {
+
+            if (strncmp(vmline, "VmRSS:", 6) == 0) {
+                printf("%s", vmline); 
+                break;
+            }  
+        }
+    /*} else {
+        printf("Error status does not exist or permission not granted.\n");
+    }
+    */
         /*
         flcose(fp);
         fp = fopen(filepath2, "r");
