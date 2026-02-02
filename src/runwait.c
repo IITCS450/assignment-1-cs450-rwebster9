@@ -2,7 +2,6 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-#include <linux/time.h> // monotonic wouldnt work without this, this was VSCODES suggestion
 
 static void usage(const char *a){fprintf(stderr,"Usage: %s <cmd> [args]\n",a); exit(1);}
 
@@ -14,7 +13,7 @@ int main(int c,char**v){
 pid_t pid = fork();
 
     struct timespec start, end;
-    
+
     //Guard checks to make sure everything works
     if (pid < 0) {
         perror("Fork failed");
