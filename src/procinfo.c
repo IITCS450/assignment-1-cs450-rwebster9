@@ -52,7 +52,7 @@ int main(int c, char**v){
     fp = fopen(filepath3, "r");
 
     if (fscanf(fp,"%s", &cmdlinename)) {
-        printf("Cmd_ %s\n", cmdlinename);
+        printf("Cmd: %s\n", cmdlinename);
     } else {
         printf("Error cmd does not exist or permission not granted.\n");
     }
@@ -69,16 +69,6 @@ int main(int c, char**v){
                 break;
             }  
         }
-    /*} else {
-        printf("Error status does not exist or permission not granted.\n");
-    }
-    */
-        /*
-        flcose(fp);
-        fp = fopen(filepath2, "r");
-
-        fscanf(fp, "%")
-        */
     
     fclose(fp);
     
