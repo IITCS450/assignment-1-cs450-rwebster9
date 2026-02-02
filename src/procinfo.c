@@ -11,10 +11,6 @@ static int filepath = 256;
 int main(int c, char**v){
     
     if(c!=2||!isnum(v[1])) usage(v[0]);
-    printf("/proc/%d/stat", v[1]);
-
-    
-    printf("Hey the code is moving along");
 
     char filepath1[filepath];
     char filepath2[filepath];
@@ -22,13 +18,15 @@ int main(int c, char**v){
 
 
     snprintf(filepath1, sizeof(filepath1), "/proc/%s/stat", v[1]);
-    snprintf(filepath2, sizeof(filepath2), "/proc/%s/status", v[1]);
-    snprintf(filepath3, sizeof(filepath3), "/proc/%s/cmdline", v[1]);
+//    snprintf(filepath2, sizeof(filepath2), "/proc/%s/status", v[1]);
+//    snprintf(filepath3, sizeof(filepath3), "/proc/%s/cmdline", v[1]);
 
+    printf("fp is ab to try to open\n");
     FILE *fp = fopen(filepath1, "r");
-    
+    printf("file opened and fp was set\n");
+
     if (fp == NULL){
-        perror("Error doesn't exist or permission not granted.");
+        perror("Error doesn't exist or permission not granted.\n");
         return 1;
     }
 
@@ -36,9 +34,13 @@ int main(int c, char**v){
     char procstate;
     int ppid;
 
-    if (fscanf(fp, "%d   %c  %d", &procpid, &procstate, &ppid) == 3) {
+    
+    printf("made it to fscan \n");
+
+    if (fscanf(fp, "%d %*s %c %d", &procpid, &procstate, &ppid) == 3) {
         
-    printf("made it to fscanf");
+
+    printf("fscanf completed \n");
 
     printf("PID: %d", procpid);
     printf("STATE: %c", procstate);
