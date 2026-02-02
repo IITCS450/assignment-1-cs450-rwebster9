@@ -12,18 +12,18 @@ int main(int c, char**v){
     
     if(c!=2||!isnum(v[1])) usage(v[0]);
 
+
+    //in retrospect, I should've trapped these in functions to not make code so long completing same operation
     char filepath1[filepath];
     char filepath2[filepath];
     char filepath3[filepath];
 
 
     snprintf(filepath1, sizeof(filepath1), "/proc/%s/stat", v[1]);
-//    snprintf(filepath2, sizeof(filepath2), "/proc/%s/status", v[1]);
-//    snprintf(filepath3, sizeof(filepath3), "/proc/%s/cmdline", v[1]);
+    snprintf(filepath2, sizeof(filepath2), "/proc/%s/status", v[1]);
+    snprintf(filepath3, sizeof(filepath3), "/proc/%s/cmdline", v[1]);
 
-    printf("fp is ab to try to open\n");
     FILE *fp = fopen(filepath1, "r");
-    printf("file opened and fp was set\n");
 
     if (fp == NULL){
         perror("Error doesn't exist or permission not granted.\n");
@@ -33,19 +33,31 @@ int main(int c, char**v){
     int procpid;
     char procstate;
     int ppid;
-
-    
-    printf("made it to fscan \n");
+    int utime;
+    int stime;
 
     if (fscanf(fp, "%d %*s %c %d", &procpid, &procstate, &ppid) == 3) {
-        
 
-    printf("fscanf completed \n");
-
-    printf("PID: %d", procpid);
-    printf("STATE: %c", procstate);
-    printf("PPID: %d", ppid);
+    printf("PID: %d\n", procpid);
+    printf("STATE: %c\n", procstate);
+    printf("PPID: %d\n", ppid);
     }
+
+    fclose(fp);    
+    fp = fopen(filepath2, "r");
+
+    if (fscanf(fp, "%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %d %d", &utime, &stime) == 2) {
+        int cpu_t = (utime/100) + (stime/100);
+        printf("CPU_T: %d\n", cpu_t);
+
+    } else {
+        printf("Error status does not exist or permission not granted.\n");
+    }
+
+    fclose(fp);    
+    fp = fopen(filepath3, "r");
+
+
         /*
         flcose(fp);
         fp = fopen(filepath2, "r");
